@@ -14,10 +14,10 @@ from typing import Any, List, Sequence
 
 def create_osm_tsp_graph(place: str, n: int, seed: int, network_type: str = "drive"):
     """OSM verilerinden TSP grafu oluşturur"""
-    # 1) Yolu indir
+    # Yolu indir
     G = ox.graph_from_place(place, network_type=network_type, simplify=True)
 
-    # 2) En büyük bileşeni al 
+    # En büyük bileşeni al 
     if isinstance(G, (nx.DiGraph, nx.MultiDiGraph)):
         components = nx.weakly_connected_components(G)   # yönlü graf için "weak"
     else:
@@ -26,10 +26,9 @@ def create_osm_tsp_graph(place: str, n: int, seed: int, network_type: str = "dri
     largest_nodes = max(components, key=len)
     G = G.subgraph(largest_nodes).copy()
 
-    # Kullanmıyoruz çünkü tek yönlü yolları korumak istiyoruz
+    # Yönlü yolları korumak istiyoruz
     # G.to_undirected() 
 
-    # 4) TSP için node'ları sample et
     all_nodes = list(G.nodes)
     random.Random(seed).shuffle(all_nodes)
     selected_nodes = all_nodes[:n]
@@ -63,7 +62,7 @@ class FoliumPlotter:
         center_lat = sum(lats) / len(lats)
         center_lng = sum(lngs) / len(lngs)
         
-        # Create map with only OpenStreetMap
+        # Create map
         m = folium.Map(
             location=[center_lat, center_lng], 
             zoom_start=12, 
